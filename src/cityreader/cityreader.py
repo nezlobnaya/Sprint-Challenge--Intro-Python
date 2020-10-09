@@ -1,7 +1,14 @@
 # Create a class to hold a city location. Call the class "City". It should have
 # fields for name, lat and lon (representing latitude and longitude).
 
+class City:
+  def __init__(self, name, lat, lon):
+    self.name = name
+    self.lat = lat
+    self.lon = lon
 
+  def __str__(self):
+    return (f'{self.name}: ({self.lat}, Lon: {self.lon}')
 # We have a collection of US cities with population over 750,000 stored in the
 # file "cities.csv". (CSV stands for "comma-separated values".)
 #
@@ -15,12 +22,19 @@
 # Note that the first line of the CSV is header that describes the fields--this
 # should not be loaded into a City object.
 cities = []
+import csv
 
 def cityreader(cities=[]):
+
   # TODO Implement the functionality to read from the 'cities.csv' file
   # For each city record, create a new City instance and add it to the 
   # `cities` list
-    
+  with open('src/cityreader/cities.csv') as csv_file:
+    reader = csv.reader(csv_file)
+    next(reader, None) #skips the headers
+    for row in reader:
+      cities.append(City(row[0], row[3], row[4]))
+      
     return cities
 
 cityreader(cities)
@@ -59,13 +73,39 @@ for c in cities:
 # Salt Lake City: (40.7774,-111.9301)
 
 # TODO Get latitude and longitude values from the user
+  
+
 
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
+  cities = cityreader(cities)
   # within will hold the cities that fall within the specified region
   within = []
+  for city in cities:
+
+    if lat2 <= float(city.lat) <= lat1 and lon2 <= float(city.lon) <= lon1:
+      within.append(city)
+
+    elif lat1 <= float(city.lat) <= lat2 and lon1 <= float(city.lon) <= lon2:
+      within.append(city)
+
+    elif lat1 <= float(city.lat) <= lat2 and lon2 <= float(city.lon) <= lon1:
+      within.append(city)
+      
+    elif lat2 <= float(city.lat) <= lat1 and  lon1 <= float(city.lon) <= lon2:
+      within.append(city)
 
   # TODO Ensure that the lat and lon valuse are all floats
   # Go through each city and check to see if it falls within 
-  # the specified coordinates.
-
+  # the specified coordinates
+  for w in within:
+    print(f'{w.name}: ({w.lat}, Lon: {w.lon})')
   return within
+  
+lat1, lon1 = input('Enter lat1, lon1: ').split(',')
+lat2, lon2 = input('Enter lat2, lon2: ').split(',')
+
+
+cityreader_stretch(float(lat1), float(lon1), float(lat2),float(lon2))
+
+
+
